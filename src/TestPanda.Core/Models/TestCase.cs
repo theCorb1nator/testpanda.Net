@@ -1,16 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
+using TestPanda.Core.Enums;
 
 namespace TestPanda.Core
 {
-    public class TestCase : ITestCase
+    public class TestCase
     {
-        public string Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public TestState State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime LastUpdated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Comments { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly TestPandaContext _context;
+        public TestCase(TestPandaContext context)
+        {
+            _context = context;
+        }
 
-        public int Id => throw new NotImplementedException();
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+        public string Description { get; set; }
+        public TestState State { get; set; }
+        public string Reason { get; set; }
+        public DateTime LastUpdated { get; set; }
+        public string Comments { get; set; }
+        public Block ActiveBlock { get; set; }
+
+
+        public void FailTest(string reason)
+        {
+            var test = _context.Tests.FirstOrDefault(x => x.Id == Id);
+            test.State = TestState.Failed;
+            test.Reason = reason;
+            _context.SaveChanges();
+        }
+        public void BlockTest(Block block)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void PassTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResetTest()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

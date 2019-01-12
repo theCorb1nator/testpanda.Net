@@ -1,4 +1,5 @@
 using System;
+using TestPanda.Core;
 using TestPanda.Vsts;
 using Xunit;
 
@@ -8,11 +9,11 @@ namespace Vsts.Test
     {
         [Theory]
         [InlineData(1)]
-        public async void VstsService_GetWorkItemById_ReturnsWorkItem(int id)
+        public async void VstsService_GetWorkItemById_ReturnsWorkItem(long id)
         {
             var sut = new VstsService();
-            var result = sut.GetWorkItemByIdAsync(id);
-            //Assert.IsType<MyWorkItem>(result);
+            var result = sut.GetIssueAsync(id);
+            Assert.IsType<Issue>(result);
         }
     }
 }
