@@ -1,4 +1,4 @@
-﻿namespace TestPanda.Api.DomainEntities
+﻿namespace TestPanda.Api
 {
     public enum Role
     {

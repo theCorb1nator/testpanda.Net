@@ -9,7 +9,7 @@ namespace TestPanda.Api.DomainEntities
     {
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int TestCaseId { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public TestState State { get; private set; }
@@ -18,15 +18,14 @@ namespace TestPanda.Api.DomainEntities
         public TestUser Author { get; private set; }
         public string Comments { get; private set; }
 
-        public TestCase(string title, string description, TestUser author)
+        public TestCase(string title, string description)
         {
             Title = title;
             Description = description;
-            Author = author;
         }
 
 
-        public IStatusGeneric Fail(string reason)
+        public IModelState Fail(string reason)
         {
             var status = new StatusGenericHandler();
             if (string.IsNullOrWhiteSpace(reason))
@@ -41,7 +40,7 @@ namespace TestPanda.Api.DomainEntities
         }
 
 
-        public IStatusGeneric PassTest(TestUser user)
+        public IModelState PassTest(TestUser user)
         {
             var status = new StatusGenericHandler();
             if (user == null)

@@ -8,7 +8,7 @@ namespace TestPanda.Api.DomainEntities
     public class TestRun
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int TestRunId { get; private set; }
 
         [Required]
         [MaxLength(50)]

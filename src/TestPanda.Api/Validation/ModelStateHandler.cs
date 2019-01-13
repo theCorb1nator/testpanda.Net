@@ -9,7 +9,7 @@ namespace TestPanda.Api.ErrorHandling
     /// <summary>
     /// This contains the error hanlding part of the GenericBizRunner
     /// </summary>
-    public class StatusGenericHandler : IStatusGeneric
+    public class ModelStateHandler : IModelState
     {
         internal const string ConstDefaultMessage = "Success";
 
@@ -43,7 +43,7 @@ namespace TestPanda.Api.ErrorHandling
         /// </summary>
         /// <param name="errorMessage">The text of the error message</param>
         /// <param name="propertyNames">optional. A list of property names that this error applies to</param>
-        public IStatusGeneric AddError(string errorMessage, params string[] propertyNames)
+        public IModelState AddError(string errorMessage, params string[] propertyNames)
         {
             if (errorMessage == null) throw new ArgumentNullException(nameof(errorMessage));
             _errors.Add(new ValidationResult
@@ -73,7 +73,7 @@ namespace TestPanda.Api.ErrorHandling
         /// This allows statuses to be combined
         /// </summary>
         /// <param name="status"></param>
-        public void CombineErrors(IStatusGeneric status)
+        public void CombineErrors(IModelState status)
         {
             _errors.AddRange(status.Errors);
             if (!HasErrors && status.Message != ConstDefaultMessage)

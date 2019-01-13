@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TestPanda.Api.DomainEntities;
+using TestPanda.Api.ErrorHandling;
 
 namespace TestPanda.Api
 {
@@ -23,9 +24,11 @@ namespace TestPanda.Api
             if (!test.Fail(reason).HasErrors) { _context.SaveChanges(); }
         }
 
-        public async Task AddTestCaseAsync(string title, string description)
+        public async Task<IModelState> AddTestCaseAsync(string title, string description)
         {
+            var status = new StatusGenericHandler();
             await _context.AddAsync(new TestCase(title, description));
+            return status;
         }
     }
 }

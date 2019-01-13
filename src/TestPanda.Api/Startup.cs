@@ -36,9 +36,10 @@ namespace TestPanda.Api
                 app.UseDeveloperExceptionPage();
             }
             app.UseStatusCodePages();
+
             AutoMapper.Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<TestCase, TestCaseDto>();
+                cfg.CreateMap<TestPlan, TestPlanDto>();
             });
 
             app.UseMvc();

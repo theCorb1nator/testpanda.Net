@@ -7,7 +7,7 @@ namespace TestPanda.Api.ErrorHandling
     /// <summary>
     /// This is the interface for creating and returning 
     /// </summary>
-    public interface IStatusGeneric
+    public interface IModelState
     {
         /// <summary>
         /// This holds the list of ValidationResult errors. If the collection is empty, then there were no errors
@@ -30,7 +30,7 @@ namespace TestPanda.Api.ErrorHandling
         /// </summary>
         /// <param name="errorMessage">The text of the error message</param>
         /// <param name="propertyNames">optional. A list of property names that this error applies to</param>
-        IStatusGeneric AddError(string errorMessage, params string[] propertyNames);
+        IModelState AddError(string errorMessage, params string[] propertyNames);
 
         /// <summary>
         /// This adds one ValidationResult to the Errors collection
@@ -48,7 +48,7 @@ namespace TestPanda.Api.ErrorHandling
         /// This allows statuses to be combined
         /// </summary>
         /// <param name="status"></param>
-        void CombineErrors(IStatusGeneric status);
+        void CombineErrors(IModelState status);
 
         /// <summary>
         /// This is a simple method to output all the errors as a single string - null if no errors

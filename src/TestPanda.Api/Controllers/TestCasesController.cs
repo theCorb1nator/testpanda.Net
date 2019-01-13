@@ -11,13 +11,13 @@ namespace TestPanda.Api.Controllers
     [Route("api/testcases")]
     public class TestCasesController : Controller
     {
-        private readonly TestPandaContext _context;
         private readonly ILogger<TestCasesController> _logger;
+        private readonly TestCaseService _service;
 
-        public TestCasesController(TestPandaContext context, ILogger<TestCasesController> logger)
+        public TestCasesController(TestCaseService service, ILogger<TestCasesController> logger)
         {
             _logger = logger;
-            _context = context;
+            _service = service;
         }
         
         [HttpGet()]

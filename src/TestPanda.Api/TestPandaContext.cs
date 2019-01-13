@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TestPanda.Api.DomainEntities;
 
-namespace TestPanda.Api.DomainEntities
+namespace TestPanda.Api
 {
     public class TestPandaContext : DbContext
     {

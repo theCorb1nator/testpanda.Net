@@ -8,10 +8,11 @@ namespace TestPanda.Api.DomainEntities
     public class TestUser
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; private set; }
+        public int TestUserId { get; private set; }
         public string Name { get; private set; }
         public string Email { get; private set; }
         public Role Role { get; private set; }
+
 
         public TestUser(string name, 
             string email, Role role)
