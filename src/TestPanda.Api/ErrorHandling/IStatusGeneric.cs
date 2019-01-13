@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 
-namespace TestPanda.Core
+namespace TestPanda.Api.ErrorHandling
 {
     /// <summary>
     /// This is the interface for creating and returning 

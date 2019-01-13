@@ -328,3 +328,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/src/TestPanda.Vsts/*.json
+/src/TestPanda.Api/*.json

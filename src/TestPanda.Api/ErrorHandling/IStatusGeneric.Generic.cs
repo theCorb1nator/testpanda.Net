@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TestPanda.Api.ErrorHandling;
 
 namespace TestPanda.Core
 {

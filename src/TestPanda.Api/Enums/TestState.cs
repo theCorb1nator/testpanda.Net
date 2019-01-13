@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TestPanda.Core.Enums
+namespace TestPanda.Api
 {
     public enum TestState
     {

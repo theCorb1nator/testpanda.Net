@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestPanda.Core\TestPanda.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="vsts.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
