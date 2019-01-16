@@ -27,7 +27,7 @@ namespace TestPanda.Api.DomainEntities
 
         public IModelState Fail(string reason)
         {
-            var status = new StatusGenericHandler();
+            var status = new ModelStateHandler();
             if (string.IsNullOrWhiteSpace(reason))
             {
                 status.AddError("You must provide a fail reason.", nameof(reason));
@@ -42,7 +42,7 @@ namespace TestPanda.Api.DomainEntities
 
         public IModelState PassTest(TestUser user)
         {
-            var status = new StatusGenericHandler();
+            var status = new ModelStateHandler();
             if (user == null)
             {
                 status.AddError("No user provided", nameof(user));

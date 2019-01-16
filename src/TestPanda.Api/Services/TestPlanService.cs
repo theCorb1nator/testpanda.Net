@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestPanda.Api.DomainEntities;
 using TestPanda.Api.ErrorHandling;
+using TestPanda.Api.Models;
 
 namespace TestPanda.Api.Services
 {
@@ -15,26 +18,36 @@ namespace TestPanda.Api.Services
             _context = context;
         }
 
-        public Task<IModelState> DeleteTestPlanAsync(DeleteTestPlanDto dto)
+        public async Task<IModelState> DeleteTestPlanAsync(DeleteTestPlanModel Model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TestPlanDto> GetTestPlanAsync(int testPlanId)
+        public async Task<TestPlanModel> GetTestPlanAsync(int testPlanId)
         {
-            var testplanDto = new TestPlanDto();
-            var testplanET = _context.TestPlans.SingleOrDefaultAsync(x => x.Id == testPlanId);
-            testplanDto
+            var testPlan = await _context.TestPlans.SingleOrDefaultAsync(x => x.TestPlanId == testPlanId);
+            return Mapper.Map<TestPlanModel>(testPlan);
+
         }
 
-        public Task<IEnumerable<TestPlanDto>> GetTestPlansAsync()
+        public async Task<IEnumerable<TestPlanModel>> GetTestPlansAsync()
+        {
+            var testPlansFromDb = await _context.TestPlans.ToListAsync();
+            return Mapper.Map<IEnumerable<TestPlanModel>>(testPlansFromDb);
+        }
+
+        public Task<IModelState> UpdateTestPlanAsync(UpdateTestPlanModel Model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IModelState> UpdateTestPlanAsync(UpdateTestPlanDto dto)
+        public async Task<TestPlanModel> CreateTestPlanAsync(AddTestPlanModel testPlan)
         {
-            throw new NotImplementedException();
+            var testPlanEntity = Mapper.Map<TestPlan>(testPlan);
+            var entity = await _context.TestPlans.AddAsync(new TestPlan(testPlan.Title, testPlan.Description));
+            await _context.SaveChangesAsync();
+            var testPlanModel = Mapper.Map<TestPlanModel>(entity);
+            return testPlanModel;
         }
     }
 }

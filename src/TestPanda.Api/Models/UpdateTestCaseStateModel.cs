@@ -1,6 +1,6 @@
-﻿namespace TestPanda.Api.Services
+﻿namespace TestPanda.Api.Models
 {
-    public class UpdateTestCaseStateDto
+    public class UpdateTestCaseStateModel
     {
         public int TestCaseId { get; set; }
         public string Title { get; set; }

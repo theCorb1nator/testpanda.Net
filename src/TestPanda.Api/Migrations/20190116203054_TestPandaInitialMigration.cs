@@ -1,9 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TestPanda.Api.Migrations
 {
-    public partial class TestPandaDbInitialMigration : Migration
+    public partial class TestPandaInitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,85 +12,70 @@ namespace TestPanda.Api.Migrations
                 name: "TestUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
+                    TestUserId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Role = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Block",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false),
-                    DateBlocked = table.Column<DateTime>(nullable: false),
-                    TestUserId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Block", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Block_TestUsers_TestUserId",
-                        column: x => x.TestUserId,
-                        principalTable: "TestUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_TestUsers", x => x.TestUserId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TestRuns",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
+                    TestRunId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(maxLength: 50, nullable: false),
-                    TestUserId = table.Column<int>(nullable: false)
+                    TesterTestUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestRuns", x => x.Id);
+                    table.PrimaryKey("PK_TestRuns", x => x.TestRunId);
                     table.ForeignKey(
-                        name: "FK_TestRuns_TestUsers_TestUserId",
-                        column: x => x.TestUserId,
+                        name: "FK_TestRuns_TestUsers_TesterTestUserId",
+                        column: x => x.TesterTestUserId,
                         principalTable: "TestUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "TestUserId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TestPlans",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
+                    TestPlanId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     DateCreated = table.Column<DateTime>(nullable: false),
-                    CreatedById = table.Column<int>(nullable: true),
-                    UpdatedById = table.Column<int>(nullable: true),
+                    AuthorTestUserId = table.Column<int>(nullable: true),
+                    UpdatedByTestUserId = table.Column<int>(nullable: true),
                     TestRunId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestPlans", x => x.Id);
+                    table.PrimaryKey("PK_TestPlans", x => x.TestPlanId);
                     table.ForeignKey(
-                        name: "FK_TestPlans_TestUsers_CreatedById",
-                        column: x => x.CreatedById,
+                        name: "FK_TestPlans_TestUsers_AuthorTestUserId",
+                        column: x => x.AuthorTestUserId,
                         principalTable: "TestUsers",
-                        principalColumn: "Id",
+                        principalColumn: "TestUserId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TestPlans_TestRuns_TestRunId",
                         column: x => x.TestRunId,
                         principalTable: "TestRuns",
-                        principalColumn: "Id",
+                        principalColumn: "TestRunId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TestPlans_TestUsers_UpdatedById",
-                        column: x => x.UpdatedById,
+                        name: "FK_TestPlans_TestUsers_UpdatedByTestUserId",
+                        column: x => x.UpdatedByTestUserId,
                         principalTable: "TestUsers",
-                        principalColumn: "Id",
+                        principalColumn: "TestUserId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -97,54 +83,38 @@ namespace TestPanda.Api.Migrations
                 name: "TestCases",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false),
+                    TestCaseId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     State = table.Column<int>(nullable: false),
                     Reason = table.Column<string>(nullable: true),
                     LastUpdated = table.Column<DateTime>(nullable: false),
-                    CreatedById = table.Column<int>(nullable: true),
+                    AuthorTestUserId = table.Column<int>(nullable: true),
                     Comments = table.Column<string>(nullable: true),
-                    ActiveBlockId = table.Column<int>(nullable: true),
                     TestPlanId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestCases", x => x.Id);
+                    table.PrimaryKey("PK_TestCases", x => x.TestCaseId);
                     table.ForeignKey(
-                        name: "FK_TestCases_Block_ActiveBlockId",
-                        column: x => x.ActiveBlockId,
-                        principalTable: "Block",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TestCases_TestUsers_CreatedById",
-                        column: x => x.CreatedById,
+                        name: "FK_TestCases_TestUsers_AuthorTestUserId",
+                        column: x => x.AuthorTestUserId,
                         principalTable: "TestUsers",
-                        principalColumn: "Id",
+                        principalColumn: "TestUserId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TestCases_TestPlans_TestPlanId",
                         column: x => x.TestPlanId,
                         principalTable: "TestPlans",
-                        principalColumn: "Id",
+                        principalColumn: "TestPlanId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Block_TestUserId",
-                table: "Block",
-                column: "TestUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TestCases_ActiveBlockId",
+                name: "IX_TestCases_AuthorTestUserId",
                 table: "TestCases",
-                column: "ActiveBlockId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TestCases_CreatedById",
-                table: "TestCases",
-                column: "CreatedById");
+                column: "AuthorTestUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TestCases_TestPlanId",
@@ -152,9 +122,9 @@ namespace TestPanda.Api.Migrations
                 column: "TestPlanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestPlans_CreatedById",
+                name: "IX_TestPlans_AuthorTestUserId",
                 table: "TestPlans",
-                column: "CreatedById");
+                column: "AuthorTestUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TestPlans_TestRunId",
@@ -162,23 +132,20 @@ namespace TestPanda.Api.Migrations
                 column: "TestRunId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestPlans_UpdatedById",
+                name: "IX_TestPlans_UpdatedByTestUserId",
                 table: "TestPlans",
-                column: "UpdatedById");
+                column: "UpdatedByTestUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestRuns_TestUserId",
+                name: "IX_TestRuns_TesterTestUserId",
                 table: "TestRuns",
-                column: "TestUserId");
+                column: "TesterTestUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "TestCases");
-
-            migrationBuilder.DropTable(
-                name: "Block");
 
             migrationBuilder.DropTable(
                 name: "TestPlans");

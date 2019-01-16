@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TestPanda.Api.DomainEntities;
+using TestPanda.Api.Models;
+using TestPanda.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,37 +13,19 @@ namespace TestPanda.Api.Controllers
     public class TestCasesController : Controller
     {
         private readonly ILogger<TestCasesController> _logger;
-        private readonly TestCaseService _service;
+        private readonly ITestCaseService _service;
 
-        public TestCasesController(TestCaseService service, ILogger<TestCasesController> logger)
+        public TestCasesController(ITestCaseService service, ILogger<TestCasesController> logger)
         {
             _logger = logger;
             _service = service;
         }
-        
-        [HttpGet()]
-        public IActionResult GetTestCases()
-        {
-            var context = _context.TestCases.ToList();
-            List<TestCaseDto> testCases = new List<TestCaseDto>();
-            foreach (var test in context)
-            {
-                testCases.Add(new TestCaseDto()
-                {
-                    Id = test.Id,
-                    Description = test.Description,
-                    Title = test.Title,
-                    State = test.State.ToString()
-                });
-            }
-            return new JsonResult(testCases);
-        }
 
         [HttpGet("{testCaseId}")]
-        public IActionResult GetTestCases(int testCaseId)
+        public async Task<IActionResult> GetTestCases(int testCaseId)
         {
             _logger.LogInformation($"Get Test Case {testCaseId}");
-            var testCase = _context.TestCases.Single(x => x.Id == testCaseId);
+            var testCase = await _service.GetTestCaseAsync(testCaseId);
             return new JsonResult(testCase);
         }
     }

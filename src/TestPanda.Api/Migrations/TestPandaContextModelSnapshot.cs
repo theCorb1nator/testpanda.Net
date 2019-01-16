@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TestPanda.Api.DomainEntities;
+using TestPanda.Api;
 
 namespace TestPanda.Api.Migrations
 {
@@ -19,32 +19,15 @@ namespace TestPanda.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TestPanda.Api.DomainEntities.Block", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateBlocked");
-
-                    b.Property<int>("TestUserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TestUserId");
-
-                    b.ToTable("Block");
-                });
-
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestCase", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("TestCaseId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ActiveBlockId");
+                    b.Property<int?>("AuthorTestUserId");
 
                     b.Property<string>("Comments");
-
-                    b.Property<int?>("CreatedById");
 
                     b.Property<string>("Description");
 
@@ -58,11 +41,9 @@ namespace TestPanda.Api.Migrations
 
                     b.Property<string>("Title");
 
-                    b.HasKey("Id");
+                    b.HasKey("TestCaseId");
 
-                    b.HasIndex("ActiveBlockId");
-
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("AuthorTestUserId");
 
                     b.HasIndex("TestPlanId");
 
@@ -71,52 +52,57 @@ namespace TestPanda.Api.Migrations
 
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestPlan", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("TestPlanId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CreatedById");
+                    b.Property<int?>("AuthorTestUserId");
 
                     b.Property<DateTime>("DateCreated");
+
+                    b.Property<string>("Description");
 
                     b.Property<int?>("TestRunId");
 
                     b.Property<string>("Title");
 
-                    b.Property<int?>("UpdatedById");
+                    b.Property<int?>("UpdatedByTestUserId");
 
-                    b.HasKey("Id");
+                    b.HasKey("TestPlanId");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("AuthorTestUserId");
 
                     b.HasIndex("TestRunId");
 
-                    b.HasIndex("UpdatedById");
+                    b.HasIndex("UpdatedByTestUserId");
 
                     b.ToTable("TestPlans");
                 });
 
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestRun", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("TestRunId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("TestUserId");
+                    b.Property<int?>("TesterTestUserId");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.HasKey("Id");
+                    b.HasKey("TestRunId");
 
-                    b.HasIndex("TestUserId");
+                    b.HasIndex("TesterTestUserId");
 
                     b.ToTable("TestRuns");
                 });
 
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("TestUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email");
 
@@ -124,28 +110,16 @@ namespace TestPanda.Api.Migrations
 
                     b.Property<int>("Role");
 
-                    b.HasKey("Id");
+                    b.HasKey("TestUserId");
 
                     b.ToTable("TestUsers");
                 });
 
-            modelBuilder.Entity("TestPanda.Api.DomainEntities.Block", b =>
-                {
-                    b.HasOne("TestPanda.Api.DomainEntities.TestUser", "BlockedBy")
-                        .WithMany()
-                        .HasForeignKey("TestUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestCase", b =>
                 {
-                    b.HasOne("TestPanda.Api.DomainEntities.Block", "ActiveBlock")
+                    b.HasOne("TestPanda.Api.DomainEntities.TestUser", "Author")
                         .WithMany()
-                        .HasForeignKey("ActiveBlockId");
-
-                    b.HasOne("TestPanda.Api.DomainEntities.TestUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("AuthorTestUserId");
 
                     b.HasOne("TestPanda.Api.DomainEntities.TestPlan")
                         .WithMany("TestCases")
@@ -154,9 +128,9 @@ namespace TestPanda.Api.Migrations
 
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestPlan", b =>
                 {
-                    b.HasOne("TestPanda.Api.DomainEntities.TestUser", "CreatedBy")
+                    b.HasOne("TestPanda.Api.DomainEntities.TestUser", "Author")
                         .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .HasForeignKey("AuthorTestUserId");
 
                     b.HasOne("TestPanda.Api.DomainEntities.TestRun")
                         .WithMany("TestPlans")
@@ -164,15 +138,14 @@ namespace TestPanda.Api.Migrations
 
                     b.HasOne("TestPanda.Api.DomainEntities.TestUser", "UpdatedBy")
                         .WithMany()
-                        .HasForeignKey("UpdatedById");
+                        .HasForeignKey("UpdatedByTestUserId");
                 });
 
             modelBuilder.Entity("TestPanda.Api.DomainEntities.TestRun", b =>
                 {
                     b.HasOne("TestPanda.Api.DomainEntities.TestUser", "Tester")
                         .WithMany()
-                        .HasForeignKey("TestUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TesterTestUserId");
                 });
 #pragma warning restore 612, 618
         }

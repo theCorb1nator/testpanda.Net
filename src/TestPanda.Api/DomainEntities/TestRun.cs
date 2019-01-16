@@ -9,15 +9,10 @@ namespace TestPanda.Api.DomainEntities
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TestRunId { get; private set; }
-
         [Required]
         [MaxLength(50)]
         public string Title { get; private set; }
-
-        [ForeignKey("TestUserId")]
         public TestUser Tester { get; private set; }
-        public int TestUserId { get; private set; }
         public IEnumerable<TestPlan> TestPlans { get; private set; }
-
     }
 }
